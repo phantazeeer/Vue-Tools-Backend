@@ -7,8 +7,8 @@ class UserCreateResponse(BaseModel):
 
 
 class UserCreateParameters(BaseModel):
-    name: EmailStr
-    email: str
+    name: str
+    email: EmailStr
     password: str
 
 
