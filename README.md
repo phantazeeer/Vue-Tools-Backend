@@ -12,6 +12,13 @@ source .venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
+```bash
+alembic revision --autogenerate
+```
+```bash
+alembic upgrade head
+```
+
 проблема с импортами:
 ```bash
 export PYTHONPATH=$(pwd)
