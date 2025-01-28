@@ -36,7 +36,7 @@ def get_jwt_payload(token: str) -> dict | str:
     :param token: str
     """
     try:
-        decoded = jwt.decode(token, settings.JWT_SECRET_KEY, algorithm=settings.ENCRYPT_ALG)
+        decoded = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.ENCRYPT_ALG])
         return decoded
     except jwt.ExpiredSignatureError:
         raise HTTPException(401, "Bearer token expired")
@@ -49,13 +49,13 @@ def create_token(type: str, user_id: int) -> str:
         return create_jwt(
             {"type": "jwt_access",
              "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_LT),
-             "sub": user_id,
+             "sub": str(user_id),
              },
         )
     if type == "refresh":
         return create_jwt(
             {"type": "jwt_refresh",
              "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.REFRESH_TOKEN_LT),
-             "sub": user_id,
+             "sub": str(user_id),
              },
         )
