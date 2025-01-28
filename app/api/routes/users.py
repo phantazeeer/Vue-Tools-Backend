@@ -1,9 +1,12 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Header
 
 from app.api.schemas import UserCreateParameters
 from app.api.schemas import UserCreateResponse
 from app.api.schemas import UserLogInParameters
 from app.api.schemas import UserLogInResponse
+from app.api.schemas.user import UserGetMeResponse
 from app.services.user_service import UserService
 
 router = APIRouter(tags=["work with users"], prefix="/api")
@@ -25,3 +28,13 @@ async def login(user: UserLogInParameters) -> UserLogInResponse:
     if isinstance(resp, tuple):
         resp = UserLogInResponse(jwt_access=resp[0], jwt_refresh=resp[1])
         return resp
+
+
+@router.get("/me")
+async def me(jwt_access: Annotated[str, Header()]) -> UserGetMeResponse:
+    resp = await UserService.get_me(jwt_access)
+    return UserGetMeResponse(user_id=resp.id,
+                             name=resp.username,
+                             email=resp.email,
+                             is_active=resp.is_active,
+                             )

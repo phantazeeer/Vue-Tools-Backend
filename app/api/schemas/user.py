@@ -20,3 +20,10 @@ class UserLogInParameters(BaseModel):
 class UserLogInResponse(BaseModel):
     jwt_refresh: str
     jwt_access: str
+
+
+class UserGetMeResponse(BaseModel):
+    user_id: int
+    name: str
+    email: EmailStr
+    is_active: bool

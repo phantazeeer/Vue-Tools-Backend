@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from app.db.models import User
 from app.repositories import SessionsRepository
 from app.repositories import UserRepository
-from app.utils import create_token
+from app.utils import create_token, get_jwt_payload
 from app.utils import verify_password
 
 
@@ -29,3 +29,12 @@ class UserService:
                 raise HTTPException(400, "Неверный пароль")
         else:
             raise HTTPException(400, "Неверная почта пользователя")
+
+    @staticmethod
+    async def get_me(token: str):
+        token = get_jwt_payload(token)
+        if isinstance(token, dict):
+            user = await UserRepository.find_user_by_id(int(token["sub"]))
+            return user
+        else:
+            raise HTTPException(400, "Не валидный токен")

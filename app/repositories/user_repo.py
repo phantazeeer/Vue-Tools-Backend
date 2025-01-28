@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 
 from app.db.database import async_session_maker as as_fabric
@@ -35,4 +36,17 @@ class UserRepository:
         async with as_fabric() as session:
             query = select(User).filter(User.email == email)
             result = await session.execute(query)
-        return result.scalars().first()
+            result = result.scalars().first()
+            if not isinstance(result, User):
+                raise HTTPException(404, "Пользователь не найден")
+        return result
+
+    @staticmethod
+    async def find_user_by_id(id: int) -> User:
+        async with as_fabric() as session:
+            query = select(User).filter(User.id == id)
+            result = await session.execute(query)
+            result = result.scalars().first()
+            if not isinstance(result, User):
+                raise HTTPException(404, "Пользователь не найден")
+        return result

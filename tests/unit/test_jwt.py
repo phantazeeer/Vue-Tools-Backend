@@ -10,6 +10,5 @@ class TestToken:
     def test_payload(self):
         access_token = create_token("access", 5)
         payload = get_jwt_payload(access_token)
-        print(dict(payload))
         assert int(payload["sub"]) == 5
         assert payload["type"] == "jwt_access"
