@@ -1,17 +1,11 @@
+from datetime import datetime
 from datetime import timedelta
-from typing import Annotated
+from datetime import timezone
 
-from fastapi import Depends
-from fastapi import FastAPI
-from fastapi import Header
 from fastapi import HTTPException
 import jwt
 
-app = FastAPI()
-access_token_life_time = timedelta(hours=1)
-refresh_token_life_time = timedelta(days=30)
-JWT_SECRET_KEY = "secret"
-ENCRYPT_ALG = "HS256"
+from app.core import settings
 
 
 # Authentification
@@ -31,7 +25,7 @@ def create_jwt(payload: dict) -> str:
     for param in payload.copy().keys():
         if not payload[param]:
             payload.pop(param)
-    return jwt.encode(payload, JWT_SECRET_KEY, algorithm=ENCRYPT_ALG)
+    return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.ENCRYPT_ALG)
 
 
 def get_jwt_payload(token: str) -> dict | str:
@@ -42,7 +36,7 @@ def get_jwt_payload(token: str) -> dict | str:
     :param token: str
     """
     try:
-        decoded = jwt.decode(token, JWT_SECRET_KEY, algorithms=ENCRYPT_ALG)
+        decoded = jwt.decode(token, settings.JWT_SECRET_KEY, algorithm=settings.ENCRYPT_ALG)
         return decoded
     except jwt.ExpiredSignatureError:
         raise HTTPException(401, "Bearer token expired")
@@ -50,10 +44,18 @@ def get_jwt_payload(token: str) -> dict | str:
         raise HTTPException(401, "Invalid bearer token")
 
 
-def check_jwt(token: Annotated[str, Header()]):
-    return get_jwt_payload(token)
-
-
-@app.get("/", dependencies=[Depends(check_jwt)])
-def main():
-    return "hello"
+def create_token(type: str, user_id: int) -> str:
+    if type == "access":
+        return create_jwt(
+            {"type": "jwt_access",
+             "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_LT),
+             "sub": user_id,
+             },
+        )
+    if type == "refresh":
+        return create_jwt(
+            {"type": "jwt_refresh",
+             "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.REFRESH_TOKEN_LT),
+             "sub": user_id,
+             },
+        )

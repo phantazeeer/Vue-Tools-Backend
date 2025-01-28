@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
+    ACCESS_TOKEN_LT: int  # minutes
+    REFRESH_TOKEN_LT: int  # minutes
+    JWT_SECRET_KEY: str
+    ENCRYPT_ALG: str
 
     @property
     def ASYNC_DATABASE_URL(self):

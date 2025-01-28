@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class UserCreateResponse(BaseModel):
@@ -7,13 +7,13 @@ class UserCreateResponse(BaseModel):
 
 
 class UserCreateParameters(BaseModel):
-    name: str
+    name: EmailStr
     email: str
     password: str
 
 
 class UserLogInParameters(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
