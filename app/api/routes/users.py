@@ -1,6 +1,7 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter
+from fastapi import Header
 
 from app.api.schemas import UserCreateParameters
 from app.api.schemas import UserCreateResponse

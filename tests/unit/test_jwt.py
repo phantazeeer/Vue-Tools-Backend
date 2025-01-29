@@ -1,4 +1,5 @@
-from app.utils import create_token, get_jwt_payload
+from app.utils import create_token
+from app.utils import get_jwt_payload
 
 
 class TestToken:

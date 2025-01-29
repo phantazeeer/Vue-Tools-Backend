@@ -10,9 +10,9 @@ sys.path.append(os.path.join(sys.path[0], "app"))
 
 from alembic import context
 from app.core.config import settings
-from app.db.database import Base
 from app.db import Session  # noqa
-from app.db import User # noqa
+from app.db import User  # noqa
+from app.db.database import Base
 
 if not os.path.exists("./versions"):
     os.mkdir("./versions")

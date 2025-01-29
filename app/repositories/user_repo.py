@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy import select
 
-from app.db.database import async_session_maker as as_fabric
 from app.db import User
+from app.db.database import async_session_maker as as_fabric
 from app.utils import get_password_hash
 
 

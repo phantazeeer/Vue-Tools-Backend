@@ -1,4 +1,5 @@
-from app.utils import get_password_hash, verify_password
+from app.utils import get_password_hash
+from app.utils import verify_password
 
 
 class TestPswdUtils:

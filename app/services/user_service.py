@@ -3,7 +3,8 @@ from fastapi import HTTPException
 from app.db import User
 from app.repositories import SessionsRepository
 from app.repositories import UserRepository
-from app.utils import create_token, get_jwt_payload
+from app.utils import create_token
+from app.utils import get_jwt_payload
 from app.utils import verify_password
 
 
