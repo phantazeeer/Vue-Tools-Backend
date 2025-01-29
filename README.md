@@ -13,6 +13,10 @@ pip install -r requirements.txt
 ```
 
 ```bash
+mkdir alembic/versions
+```
+
+```bash
 alembic revision --autogenerate
 ```
 ```bash
