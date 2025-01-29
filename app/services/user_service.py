@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 
-from app.db.models import User
+from app.db import User
 from app.repositories import SessionsRepository
 from app.repositories import UserRepository
 from app.utils import create_token, get_jwt_payload

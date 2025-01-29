@@ -1,5 +1,5 @@
 from app.db.database import async_session_maker as as_fabric
-from app.db.models.sessions import Session
+from app.db import Session
 
 
 class SessionsRepository:
