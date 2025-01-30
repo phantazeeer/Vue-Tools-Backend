@@ -1,7 +1,8 @@
 from typing import Annotated
 
 from fastapi import APIRouter
-from fastapi import Header
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
 from app.api.schemas import UserCreateParameters
 from app.api.schemas import UserCreateResponse
@@ -9,6 +10,7 @@ from app.api.schemas import UserLogInParameters
 from app.api.schemas import UserLogInResponse
 from app.api.schemas.user import UserGetMeResponse
 from app.services.user_service import UserService
+from app.utils import get_jwt_payload
 
 router = APIRouter(tags=["work with users"], prefix="/api")
 
@@ -19,7 +21,7 @@ async def register(user: UserCreateParameters) -> UserCreateResponse:
     access_token, refresh_token = await UserService.register(
         username=user.name, password=user.password, email=user.email,
     )
-    response = UserCreateResponse(jwt_refresh=refresh_token, jwt_access=access_token)
+    response = UserCreateResponse(refresh_token=refresh_token, access_token=access_token, token_type="bearer")
     return response
 
 
@@ -27,12 +29,20 @@ async def register(user: UserCreateParameters) -> UserCreateResponse:
 async def login(user: UserLogInParameters) -> UserLogInResponse:
     resp = await UserService.login(user.email, user.password)
     if isinstance(resp, tuple):
-        resp = UserLogInResponse(jwt_access=resp[0], jwt_refresh=resp[1])
+        resp = UserLogInResponse(access_token=resp[0], token_type="bearer", refresh_token=resp[1])
+        return resp
+
+
+@router.post("/docs/login")
+async def docs_login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+    resp = await UserService.login(form_data.username, form_data.password)
+    if isinstance(resp, tuple):
+        resp = UserLogInResponse(access_token=resp[0], token_type="bearer", refresh_token=resp[1])
         return resp
 
 
 @router.get("/me")
-async def me(jwt_access: Annotated[str, Header()]) -> UserGetMeResponse:
+async def me(jwt_access: Annotated[str, Depends(get_jwt_payload)]) -> UserGetMeResponse:
     resp = await UserService.get_me(jwt_access)
     return UserGetMeResponse(user_id=resp.id,
                              name=resp.username,

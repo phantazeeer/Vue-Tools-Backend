@@ -3,8 +3,9 @@ from pydantic import EmailStr
 
 
 class UserCreateResponse(BaseModel):
-    jwt_refresh: str
-    jwt_access: str
+    access_token: str
+    token_type: str
+    refresh_token: str
 
 
 class UserCreateParameters(BaseModel):
@@ -19,8 +20,9 @@ class UserLogInParameters(BaseModel):
 
 
 class UserLogInResponse(BaseModel):
-    jwt_refresh: str
-    jwt_access: str
+    access_token: str
+    token_type: str
+    refresh_token: str
 
 
 class UserGetMeResponse(BaseModel):

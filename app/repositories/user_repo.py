@@ -6,6 +6,7 @@ from app.db.database import async_session_maker as as_fabric
 from app.utils import get_password_hash
 
 
+# TODO: написать проверку пользователя при регистрации
 class UserRepository:
 
     @staticmethod

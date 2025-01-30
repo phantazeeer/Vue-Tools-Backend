@@ -1,11 +1,16 @@
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
+from typing import Annotated
 
+from fastapi import Depends
 from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordBearer
 import jwt
 
 from app.core import settings
+
+secured = OAuth2PasswordBearer(tokenUrl='/api/docs/login')
 
 
 # Authentification
@@ -28,7 +33,7 @@ def create_jwt(payload: dict) -> str:
     return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=settings.ENCRYPT_ALG)
 
 
-def get_jwt_payload(token: str) -> dict | str:
+def get_jwt_payload(token: Annotated[str, Depends(secured)]) -> dict | str:
     """
     This function decodes token
     if token invalid :return: name of error
@@ -47,7 +52,7 @@ def get_jwt_payload(token: str) -> dict | str:
 def create_token(type: str, user_id: int) -> str:
     if type == "access":
         return create_jwt(
-            {"type": "jwt_access",
+            {"type": "access_token",
              "exp": datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_LT),
              "sub": str(user_id),
              },
