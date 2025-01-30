@@ -6,12 +6,18 @@ from app.db.database import async_session_maker as as_fabric
 from app.utils import get_password_hash
 
 
-# TODO: написать проверку пользователя при регистрации
 class UserRepository:
 
     @staticmethod
     async def add_user(username: str, email: str, password: str) -> int:
         async with as_fabric() as session:
+            query = select(User).filter(User.username == username)
+            name = await session.execute(query)
+            query = select(User).filter(User.email == email)
+            email = await session.execute(query)
+            if name or email:
+                raise HTTPException(400, "Пользователь уже существует")
+
             user = User(
                 username=username,
                 email=email,
