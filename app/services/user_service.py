@@ -13,13 +13,14 @@ class UserService:
     def __init__(self, uow: IUnitOfWork):
         self.uow = uow
 
-    @staticmethod
-    async def register(username: str, email: str, password: str):
-        user_id = await UserRepository.add_user(username=username, email=email, password=password)
-        access_token = create_token("access", user_id)
-        refresh_token = create_token("refresh", user_id)
-        await SessionsRepository.add_token(user_id=user_id, jwt=refresh_token)
-        return access_token, refresh_token
+    async def register(self, username: str, email: str, password: str):
+        async with self.uow:
+            user_id = await self.uow.users.add_user(username=username, email=email, password=password)
+            access_token = create_token("access", user_id)
+            refresh_token = create_token("refresh", user_id)
+            await self.uow.commit()
+            await SessionsRepository.add_token(user_id=user_id, jwt=refresh_token)
+            return access_token, refresh_token
 
     @staticmethod
     async def login(email: str, password: str):

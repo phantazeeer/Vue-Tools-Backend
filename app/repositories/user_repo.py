@@ -12,10 +12,13 @@ class UserRepository(Repository):
 
 
     async def add_user(self, username: str, email: str, password: str) -> int:
-        name = await super().find_one(username=username)
-        email_ = await super().find_one(email=email)
-        if name or email_:
-            raise HTTPException(400, "Пользователь уже существует")
+        try:
+            name = await super().find_one(username=username)
+            email_ = await super().find_one(email=email)
+            if name or email_:
+                raise HTTPException(400, "Пользователь уже существует")
+        except Exception:
+            pass
 
         await super().add_one({"username": username,
                                "email": email,

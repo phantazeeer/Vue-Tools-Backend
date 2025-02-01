@@ -49,3 +49,6 @@ class UnitOfWork(IUnitOfWork):
 
     async def rollback(self):
         await self.session.rollback()
+
+if __name__ == "__main__":
+    print(UnitOfWork())

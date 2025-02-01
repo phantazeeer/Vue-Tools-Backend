@@ -11,14 +11,18 @@ from app.api.schemas import UserLogInResponse
 from app.api.schemas.user import UserGetMeResponse
 from app.services.user_service import UserService
 from app.utils import get_jwt_payload
+from app.utils.unitofwork import IUnitOfWork, UnitOfWork
 
 router = APIRouter(tags=["work with users"], prefix="/api")
 
+async def get_user_service(uow: IUnitOfWork = Depends(UnitOfWork)) -> UserService:
+    return UserService(uow)
+
 
 @router.post("/register")
-async def register(user: UserCreateParameters) -> UserCreateResponse:
+async def register(user: UserCreateParameters, user_service: UserService = Depends(get_user_service)) -> UserCreateResponse:
     """Регистрация пользователя"""
-    access_token, refresh_token = await UserService.register(
+    access_token, refresh_token = await user_service.register(
         username=user.name, password=user.password, email=user.email,
     )
     response = UserCreateResponse(refresh_token=refresh_token, access_token=access_token, token_type="bearer")
