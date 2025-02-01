@@ -1,8 +1,7 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 
 from app.db import User
-from app.db.database import async_session_maker as as_fabric
 from app.utils import get_password_hash
 from app.repositories.base_repository import Repository
 
@@ -10,21 +9,17 @@ from app.repositories.base_repository import Repository
 class UserRepository(Repository):
     model = User
 
-
     async def add_user(self, username: str, email: str, password: str) -> int:
         try:
-            name = await super().find_one(username=username)
-            email_ = await super().find_one(email=email)
-            if name or email_:
-                raise HTTPException(400, "Пользователь уже существует")
-        except Exception:
-            pass
-
-        await super().add_one({"username": username,
-                               "email": email,
-                               "hashed_password": get_password_hash(password)})
+            await super().add_one({"username": username,
+                                   "email": email,
+                                   "hashed_password": get_password_hash(password)})
+        except IntegrityError:
+            raise HTTPException(400, "Пользователь с таким email или именем уже существует")
         result = await super().find_one(username=username)
         return result.id
+
+
 """
         async with as_fabric() as session:
             query = select(User).filter(User.username == username)

@@ -15,7 +15,7 @@ class UserService:
 
     async def register(self, username: str, email: str, password: str):
         async with self.uow:
-            user_id = await self.uow.users.add_user(username=username, email=email, password=password)
+            user_id = await self.uow.repo.add_user(username=username, email=email, password=password)
             access_token = create_token("access", user_id)
             refresh_token = create_token("refresh", user_id)
             await self.uow.commit()

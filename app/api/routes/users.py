@@ -11,11 +11,13 @@ from app.api.schemas import UserLogInResponse
 from app.api.schemas.user import UserGetMeResponse
 from app.services.user_service import UserService
 from app.utils import get_jwt_payload
-from app.utils.unitofwork import IUnitOfWork, UnitOfWork
+from app.utils.unitofwork import IUnitOfWork, UnitOfWork, uowfabric
+from app.repositories.user_repo import UserRepository
 
 router = APIRouter(tags=["work with users"], prefix="/api")
 
-async def get_user_service(uow: IUnitOfWork = Depends(UnitOfWork)) -> UserService:
+async def get_user_service() -> UserService:
+    uow = uowfabric(UserRepository)
     return UserService(uow)
 
 

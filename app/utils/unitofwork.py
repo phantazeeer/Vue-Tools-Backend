@@ -6,9 +6,6 @@ from app.repositories.user_repo import UserRepository
 
 class IUnitOfWork(ABC):
 
-    users: UserRepository
-    # добавили репозиторий сюда
-
     @abstractmethod
     def __init__(self):
         ...
@@ -31,14 +28,15 @@ class IUnitOfWork(ABC):
 
 
 class UnitOfWork(IUnitOfWork):
-    def __init__(self):
+    def __init__(self, repo_class):
         self.session_factory = async_session_maker
+        self.repo = repo_class
 
     async def __aenter__(self):
         self.session = self.session_factory()
 
         # и еще сюда его добавили
-        self.users = UserRepository(self.session)
+        self.repo = self.repo(self.session)
 
     async def __aexit__(self, *args):
         await self.rollback()
@@ -50,5 +48,5 @@ class UnitOfWork(IUnitOfWork):
     async def rollback(self):
         await self.session.rollback()
 
-if __name__ == "__main__":
-    print(UnitOfWork())
+def uowfabric(repo_class):
+    return UnitOfWork(repo_class)
