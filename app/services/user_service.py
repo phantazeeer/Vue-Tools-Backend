@@ -23,7 +23,7 @@ class UserService:
 
     @staticmethod
     async def login(email: str, password: str):
-        user = await UserRepository.find_user_by_email(email=email)
+        user = await UserRepository.find_one(email=email)
         if isinstance(user, User):
             if verify_password(password, user.hashed_password):
                 access_token = create_token("access", user.id)
@@ -38,7 +38,7 @@ class UserService:
     @staticmethod
     async def get_me(token: str):
         if isinstance(token, dict):
-            user = await UserRepository.find_user_by_id(int(token["sub"]))
+            user = await UserRepository.find_one(id=int(token["sub"]))
             return user
         else:
             raise HTTPException(400, "Не валидный токен")

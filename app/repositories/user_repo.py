@@ -10,8 +10,19 @@ from app.repositories.base_repository import Repository
 class UserRepository(Repository):
     model = User
 
-    @staticmethod
-    async def add_user(username: str, email: str, password: str) -> int:
+
+    async def add_user(self, username: str, email: str, password: str) -> int:
+        name = await super().find_one(username=username)
+        email_ = await super().find_one(email=email)
+        if name or email_:
+            raise HTTPException(400, "Пользователь уже существует")
+
+        await super().add_one({"username": username,
+                               "email": email,
+                               "hashed_password": get_password_hash(password)})
+        result = await super().find_one(username=username)
+        return result.id
+"""
         async with as_fabric() as session:
             query = select(User).filter(User.username == username)
             name = await session.execute(query)
@@ -31,15 +42,8 @@ class UserRepository(Repository):
             result = await session.execute(query)
             user_id = result.scalars().first().id
         return user_id
-
-    @staticmethod
-    def update_user():
-        pass
-
-    @staticmethod
-    def delete_user():
-        pass
-
+        """
+'''
     @staticmethod
     async def find_user_by_email(email: str) -> User:
         async with as_fabric() as session:
@@ -59,3 +63,4 @@ class UserRepository(Repository):
             if not isinstance(result, User):
                 raise HTTPException(404, "Пользователь не найден")
         return result
+'''
