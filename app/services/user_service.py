@@ -5,9 +5,14 @@ from app.repositories import SessionsRepository
 from app.repositories import UserRepository
 from app.utils import create_token
 from app.utils import verify_password
+from app.utils.unitofwork import IUnitOfWork
+from app.api.schemas.user import UserGetMeResponse
 
 
 class UserService:
+    def __init__(self, uow: IUnitOfWork):
+        self.uow = uow
+
     @staticmethod
     async def register(username: str, email: str, password: str):
         user_id = await UserRepository.add_user(username=username, email=email, password=password)
@@ -37,3 +42,11 @@ class UserService:
             return user
         else:
             raise HTTPException(400, "Не валидный токен")
+        
+
+    async def get_one_user(self, id: int) -> UserGetMeResponse:
+        async with self.uow:
+            user = await self.uow.users.find_one(id=id)
+            user_to_return = UserGetMeResponse.model_validate(user)
+            await self.uow.commit()
+            return user_to_return
