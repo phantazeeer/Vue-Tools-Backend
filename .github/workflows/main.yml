@@ -7,15 +7,15 @@ on:
 jobs:
   content_delivery:
     runs-on: ubuntu-latest
+    env:
+      SUPER_SECRET: ${{ secrets.SUPERSECRET }}
+      CD_Token: ${{ secrets.CD_USER_TOKEN }}
+      CD_Repo: ${{ secrets.MAIN_REPOSITORY }}
     steps:
       - name: SetupProject
         run: git clone --recurse-submodules "https://github.com/phantazeeer/Vue-Tools-Deploy"
       - name: Debug
         run: echo ${{ secrets.SUPERSECRET }}
       - name: RepositoryRefresh
-        env:
-          SUPER_SECRET: ${{ secrets.SUPERSECRET }}
-          CD_Token: ${{ secrets.CD_USER_TOKEN }}
-          CD_Repo: ${{ secrets.MAIN_REPOSITORY }}
         run: |
           echo "${SUPER_SECRET}"
