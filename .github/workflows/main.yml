@@ -7,9 +7,7 @@ on:
 jobs:
   content_delivery:
     runs-on: ubuntu-latest
-    env:
-      CD_Token: ${{ secrets.CD_USER_TOKEN }}
-      CD_Repo: ${{ secrets.MAIN_REPOSITORY }}
+    environment: CD-env
     steps:
       - name: SetupProject
         run: git clone --recurse-submodules "https://github.com/phantazeeer/Vue-Tools-Deploy"
