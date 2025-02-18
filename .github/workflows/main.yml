@@ -13,15 +13,11 @@ jobs:
       - name: Debug
         env:
           SUPER_SECRET: ${{ secrets.SUPERSECRET }}
-        run: echo "$SUPER_SECRET"
+        run: echo "123"
       - name: RepositoryRefresh
         env:
-          SUPER_SECRET: ${{ secrets.SuperSecret }}
+          SUPER_SECRET: ${{ secrets.SUPERSECRET }}
           CD_Token: ${{ secrets.CD_USER_TOKEN }}
           CD_Repo: ${{ secrets.MAIN_REPOSITORY }}
         run: |
-          echo "${SUPER_SECRET}" && \
-          git config --global user.name "CD Bot" && \
-          git config --global user.email "CD@fakemail.com" && \
-          cd Vue-Tools-Deploy && \
-          git push "https://x-access-token:${CD_Token}@github.com/${{ env.MAIN_REPO }}" master
+          echo "${SUPER_SECRET}"
