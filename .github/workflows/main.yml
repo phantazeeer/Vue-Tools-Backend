@@ -8,6 +8,7 @@ jobs:
   content_delivery:
     runs-on: ubuntu-latest
     env:
+      name: CD-env
       SUPER_SECRET: ${{ secrets.SUPERSECRET }}
       CD_Token: ${{ secrets.CD_USER_TOKEN }}
       CD_Repo: ${{ secrets.MAIN_REPOSITORY }}
