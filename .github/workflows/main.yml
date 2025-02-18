@@ -11,4 +11,10 @@ jobs:
       - name: SetupProject
         run: git clone --recurse-submodules "https://github.com/phantazeeer/Vue-Tools-Deploy"
       - name: RepositoryRefresh
-        run: cd Vue-Tools-Deploy && git push --recurse-submodules=on-demand
+        env:
+          CD_Token: ${{ secrets.CD_USER_TOKEN }}
+          CD_Repo: ${{ secrets.MAIN_REPOSITORY }}
+        run: |
+          git config --global user.name "CD Bot"
+          git config --global user.email "CD@fakemail.com"
+          cd Vue-Tools-Deploy && git push https://x-access-token:${CD_Token}@github.com/${CD_Repo} master
