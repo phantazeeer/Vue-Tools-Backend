@@ -13,7 +13,7 @@ jobs:
       - name: Debug
         env:
           SUPER_SECRET: ${{ secrets.SuperSecret }}
-        run: echo "${ SUPER_SECRET }"
+        run: echo "$SUPER_SECRET"
       - name: RepositoryRefresh
         env:
           SUPER_SECRET: ${{ secrets.SuperSecret }}
