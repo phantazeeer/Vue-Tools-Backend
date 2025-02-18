@@ -1,0 +1,14 @@
+# flake8: noqa
+name: ContentDelivery
+on:
+  push:
+    branches:
+      - "master"
+jobs:
+  content_delivery:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SetupProject
+        run: git clone --recurse-submodules "https://github.com/phantazeeer/Vue-Tools-Deploy"
+      - name: RepositoryRefresh
+        run: cd Vue-Tools-Deploy && git push --recurse-submodules=on-demand
