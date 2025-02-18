@@ -11,9 +11,7 @@ jobs:
       - name: SetupProject
         run: git clone --recurse-submodules "https://github.com/phantazeeer/Vue-Tools-Deploy"
       - name: Debug
-        env:
-          SUPER_SECRET: ${{ secrets.SUPERSECRET }}
-        run: echo "123"
+        run: echo ${{ secrets.SUPERSECRET }}
       - name: RepositoryRefresh
         env:
           SUPER_SECRET: ${{ secrets.SUPERSECRET }}
