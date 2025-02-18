@@ -11,3 +11,7 @@ source .venv/Scripts/activate
 ```bash
 pip install -r requirements/dev.txt
 ```
+проблема с импортами:
+```bash
+export PYTHONPATH=$(pwd)
+```
