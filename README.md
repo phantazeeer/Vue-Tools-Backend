@@ -15,3 +15,7 @@ pip install -r requirements/dev.txt
 ```bash
 export PYTHONPATH=$(pwd)
 ```
+проверить их:
+```bash
+python -c "import sys; print(sys.path)"
+```
