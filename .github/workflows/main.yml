@@ -16,4 +16,4 @@ jobs:
           git config --global user.name "CD Bot" && \
           git config --global user.email "CD@fakemail.com" && \
           cd Vue-Tools-Deploy && \
-          git push "https://x-access-token:${{ secret.CD_USER_TOKEN }}@github.com/${{ secret.MAIN_REPOSITORY }}" master
+          git push "https://x-access-token:${{ secrets.CD_USER_TOKEN }}@github.com/${{ secrets.MAIN_REPOSITORY }}" master
